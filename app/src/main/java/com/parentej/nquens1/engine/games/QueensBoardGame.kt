@@ -11,6 +11,8 @@ class QueensBoardGame(private val size: Int) : BoardGame {
   private val board = Array(size) { BooleanArray(size) }
 
   override fun togglePosition(x: Int, y: Int) {
+    board[y][x] = !board[y][x]
+
     val inc = if (board[y][x]) 1 else -1
     cols[x] += inc
     rows[y] += inc
@@ -20,9 +22,10 @@ class QueensBoardGame(private val size: Int) : BoardGame {
   override fun getAllSquares(): Array<Array<SquareDetail>> {
     return Array(size) { y ->
       Array(size) { x ->
+        val targetCount = if (board[y][x]) 1 else 0
         SquareDetail(
           hasPiece = board[y][x],
-          isTargeted = cols[x] > 1 || rows[y] > 1
+          isTargeted = cols[x] > targetCount || rows[y] > targetCount
         )
       }
     }
