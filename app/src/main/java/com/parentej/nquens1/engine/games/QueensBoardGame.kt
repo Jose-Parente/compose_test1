@@ -12,7 +12,7 @@ class QueensBoardGame(private val size: Int) : BoardGame {
 
   override fun togglePosition(squareIdx: Int) {
     val x = squareIdx % size
-    val y = squareIdx % size
+    val y = squareIdx / size
 
     board[y][x] = !board[y][x]
 
@@ -26,12 +26,16 @@ class QueensBoardGame(private val size: Int) : BoardGame {
     val res = ArrayList<SquareDetail>(size * size)
     for (y in 0 until size) {
       for (x in 0 until size) {
-        val targetCount = if (board[y][x]) 1 else 0
         res.add(
-          SquareDetail(
-            hasPiece = board[y][x],
-            isTargeted = cols[x] > targetCount || rows[y] > targetCount
-          )
+          if (board[y][x]) {
+            if (cols[x] == 1 && rows[y] == 1) SquareDetail.PIECE else SquareDetail.PIECE_TARGETED
+          }
+          else if (cols[x] == 0 && rows[y] == 0) {
+            SquareDetail.EMPTY
+          }
+          else {
+            SquareDetail.EMPTY_TARGETED
+          }
         )
       }
     }

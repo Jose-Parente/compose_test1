@@ -40,10 +40,8 @@ fun Board(
   board: List<SquareDetail>,
   onClick: (squareIdx: Int) -> Unit
 ) {
-  if (board.isEmpty()) return // TODO: Needed?
-
   LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(boardSize)) {
-    items(board.size /*key = { idx -> flatList[idx] }*/) { idx ->
+    items(board.size) { idx ->
       val square = board[idx]
       Box(
         modifier = Modifier
@@ -58,14 +56,14 @@ fun Board(
           .clickable { onClick(idx) },
         contentAlignment = Alignment.Center
       ) {
-        if (square.hasPiece) {
+        if (square == SquareDetail.PIECE || square == SquareDetail.PIECE_TARGETED) {
           Icon(
             modifier = Modifier.fillMaxSize(0.50f),
-            tint = if (square.isTargeted) Color.Red else Color.Black,
+            tint = if (square == SquareDetail.PIECE_TARGETED) Color.Red else Color.Black,
             imageVector = Icons.Queen,
             contentDescription = null
           )
-        } else if (square.isTargeted) {
+        } else if (square == SquareDetail.EMPTY_TARGETED) {
           Icon(
             modifier = Modifier.fillMaxSize(0.2f),
             imageVector = Icons.Circle,
@@ -78,7 +76,7 @@ fun Board(
 }
 
 fun SquareDetail.getBackgroundColor(): Color =
-  if (isTargeted || hasPiece) Color.Yellow else Color.LightGray
+  if (this == SquareDetail.EMPTY) Color.LightGray else Color.Yellow
 
 
 @Preview
@@ -86,9 +84,7 @@ fun SquareDetail.getBackgroundColor(): Color =
 fun BoardScreenPreview() {
   Board(
     boardSize = 1, board = listOf(
-      SquareDetail(
-        hasPiece = true, isTargeted = false
-      ),
+      SquareDetail.PIECE,
     )
   ) { _ -> }
 }
