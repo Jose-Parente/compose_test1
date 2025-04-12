@@ -14,15 +14,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-`import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.parentej.nquens1.R
 import com.parentej.nquens1.domain.model.SquareDetail
-import com.parentej.nquens1.ui.icons.Icons
 
 @Composable
 fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
@@ -58,6 +59,15 @@ fun Board(
             ).value
           )
           .border(1.dp, Color.Black)
+          .drawBehind {
+            if (square == SquareDetail.EMPTY_TARGETED) {
+              drawCircle(
+                color = Color.Black,
+                radius = 4.dp.toPx(),
+                center = Offset(size.width / 2, size.height / 2)
+              )
+            }
+          }
           .clickable { onClick(idx) },
         contentAlignment = Alignment.Center
       ) {
@@ -66,12 +76,6 @@ fun Board(
             modifier = Modifier.fillMaxSize(0.50f),
             tint = if (square == SquareDetail.PIECE_TARGETED) Color.Red else Color.Black,
             imageVector = pieceIcon,
-            contentDescription = null
-          )
-        } else if (square == SquareDetail.EMPTY_TARGETED) {
-          Icon(
-            modifier = Modifier.fillMaxSize(0.2f),
-            imageVector = Icons.Circle,
             contentDescription = null
           )
         }
