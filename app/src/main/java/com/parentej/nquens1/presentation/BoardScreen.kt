@@ -1,5 +1,7 @@
 package com.parentej.nquens1.presentation
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,9 +38,6 @@ fun Board(
   val flatList = board.flatten()
   if (flatList.isEmpty()) return
 
-  val pieceIcon = Icons.Queen
-  val targetedIcon = Icons.Circle
-
   val boardSize = board[0].size
   LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(boardSize)) {
     items(flatList.size /*key = { idx -> flatList[idx] }*/) { idx ->
@@ -46,7 +45,12 @@ fun Board(
       Box(
         modifier = Modifier
           .aspectRatio(1f)
-          .background(square.getBackgroundColor())
+          .background(
+            animateColorAsState(
+              targetValue = square.getBackgroundColor(),
+              animationSpec = tween(durationMillis = 1000),
+            ).value
+          )
           .border(1.dp, Color.Black)
           .clickable { onClick(idx % boardSize, idx / boardSize) },
         contentAlignment = Alignment.Center
@@ -57,7 +61,6 @@ fun Board(
             tint = if (square.isTargeted) Color.Red else Color.Black,
             imageVector = Icons.Queen,
             contentDescription = null
-//          imageVector = androidx.compose.material.icons.Icons.Filled.AccountCircle, contentDescription = null
           )
         } else if (square.isTargeted) {
           Icon(
@@ -71,7 +74,7 @@ fun Board(
   }
 }
 
-fun SquareDetail.getBackgroundColor(): Color = if (isTargeted) Color.Yellow else Color.LightGray
+fun SquareDetail.getBackgroundColor(): Color = if (isTargeted || hasPiece) Color.Yellow else Color.LightGray
 
 
 @Preview
