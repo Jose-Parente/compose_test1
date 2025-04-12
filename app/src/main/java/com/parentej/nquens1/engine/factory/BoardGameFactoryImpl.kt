@@ -11,8 +11,8 @@ class BoardGameFactoryImpl: BoardGameFactory {
   override fun createBoardGame(pieceType: PieceType, size: Int): BoardGame {
     return when (pieceType) {
       PieceType.QUEEN -> QueensBoardGame(size)
-      PieceType.TOWER -> TowersBoardGame(size)
-      PieceType.HORSE -> HorsesBoardGame(size)
+      PieceType.ROOK -> TowersBoardGame(size)
+      PieceType.KNIGHT -> HorsesBoardGame(size)
     }
   }
 }

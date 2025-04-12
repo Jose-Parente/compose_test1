@@ -20,7 +20,8 @@ class BoardViewModel(
 ) : ViewModel() {
   private lateinit var gameEngine: BoardGame
 
-  private val _uiState = MutableStateFlow(BoardUiState(boardSize = 0, board = emptyList(), pieceType = PieceType.QUEEN))
+  private val _uiState =
+    MutableStateFlow(BoardUiState(boardSize = 0, board = emptyList(), pieceType = PieceType.QUEEN))
   val uiState: StateFlow<BoardUiState> = _uiState
 
   fun togglePosition(squareIdx: Int) {
@@ -28,12 +29,24 @@ class BoardViewModel(
     _uiState.update { it.copy(board = gameEngine.getAllSquares()) }
   }
 
-
-  private fun createGame() {
-    gameEngine = createBoardUseCase(PieceType.QUEEN, 4)
-    _uiState.update { it.copy(boardSize = 4, board = gameEngine.getAllSquares()) }
+  fun changeBoardSize(newSize: Int) {
+    createGame(newSize, _uiState.value.pieceType)
   }
 
+  fun changeBoardPieceType(pieceType: PieceType) {
+    createGame(_uiState.value.boardSize, pieceType)
+  }
+
+  private fun createGame(boardSize: Int, pieceType: PieceType) {
+    gameEngine = createBoardUseCase(pieceType, boardSize)
+    _uiState.update {
+      BoardUiState(
+        boardSize = boardSize,
+        board = gameEngine.getAllSquares(),
+        pieceType = pieceType,
+      )
+    }
+  }
 
   companion object {
     val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -41,7 +54,7 @@ class BoardViewModel(
         BoardViewModel(
           savedStateHandle = createSavedStateHandle(),
           createBoardUseCase = CreateBoardUseCase(boardGameFactory = BoardGameFactoryImpl())
-        ).also { it.createGame() }
+        ).also { it.createGame(boardSize = 4, pieceType = PieceType.QUEEN) }
       }
     }
   }
