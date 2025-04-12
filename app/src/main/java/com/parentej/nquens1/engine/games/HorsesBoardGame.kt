@@ -1,4 +1,4 @@
-package com.parentej.nquens1.infrastructure.games
+package com.parentej.nquens1.engine.games
 
 import com.parentej.nquens1.domain.model.BoardGame
 import com.parentej.nquens1.domain.model.SquareDetail
