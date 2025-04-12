@@ -4,11 +4,11 @@ import com.parentej.nquens1.domain.model.BoardGame
 import com.parentej.nquens1.domain.model.SquareDetail
 
 class HorsesBoardGame(private val size: Int): BoardGame {
-  override fun togglePosition(x: Int, y: Int) {
+  override fun togglePosition(squareIdx: Int) {
     TODO("Not yet implemented")
   }
 
-  override fun getAllSquares(): Array<Array<SquareDetail>> {
+  override fun getAllSquares(): List<SquareDetail> {
     TODO("Not yet implemented")
   }
 }

@@ -20,18 +20,18 @@ class BoardViewModel(
 ) : ViewModel() {
   private lateinit var gameEngine: BoardGame
 
-  private val _uiState = MutableStateFlow(BoardUiState(board = emptyArray(), pieceType = PieceType.QUEEN))
+  private val _uiState = MutableStateFlow(BoardUiState(boardSize = 0, board = emptyList(), pieceType = PieceType.QUEEN))
   val uiState: StateFlow<BoardUiState> = _uiState
 
-  fun togglePosition(x: Int, y: Int) {
-    gameEngine.togglePosition(x, y)
+  fun togglePosition(squareIdx: Int) {
+    gameEngine.togglePosition(squareIdx)
     _uiState.update { it.copy(board = gameEngine.getAllSquares()) }
   }
 
 
   private fun createGame() {
     gameEngine = createBoardUseCase(PieceType.QUEEN, 4)
-    _uiState.update { it.copy(board = gameEngine.getAllSquares()) }
+    _uiState.update { it.copy(boardSize = 4, board = gameEngine.getAllSquares()) }
   }
 
 

@@ -10,7 +10,10 @@ class QueensBoardGame(private val size: Int) : BoardGame {
   private val cols = IntArray(size) // X
   private val board = Array(size) { BooleanArray(size) }
 
-  override fun togglePosition(x: Int, y: Int) {
+  override fun togglePosition(squareIdx: Int) {
+    val x = squareIdx % size
+    val y = squareIdx % size
+
     board[y][x] = !board[y][x]
 
     val inc = if (board[y][x]) 1 else -1
@@ -19,15 +22,19 @@ class QueensBoardGame(private val size: Int) : BoardGame {
     // TODO: Missing diagonals
   }
 
-  override fun getAllSquares(): Array<Array<SquareDetail>> {
-    return Array(size) { y ->
-      Array(size) { x ->
+  override fun getAllSquares(): List<SquareDetail> {
+    val res = ArrayList<SquareDetail>(size * size)
+    for (y in 0 until size) {
+      for (x in 0 until size) {
         val targetCount = if (board[y][x]) 1 else 0
-        SquareDetail(
-          hasPiece = board[y][x],
-          isTargeted = cols[x] > targetCount || rows[y] > targetCount
+        res.add(
+          SquareDetail(
+            hasPiece = board[y][x],
+            isTargeted = cols[x] > targetCount || rows[y] > targetCount
+          )
         )
       }
     }
+    return res
   }
 }

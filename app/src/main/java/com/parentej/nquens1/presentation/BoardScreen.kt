@@ -24,24 +24,27 @@ import com.parentej.nquens1.ui.icons.Icons
 @Composable
 fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
   val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-  Board(modifier = modifier, board = uiState.value.board) { x, y ->
-    viewModel.togglePosition(x, y)
+  Board(
+    modifier = modifier,
+    boardSize = uiState.value.boardSize,
+    board = uiState.value.board
+  ) { squareIdx ->
+    viewModel.togglePosition(squareIdx)
   }
 }
 
 @Composable
 fun Board(
   modifier: Modifier = Modifier,
-  board: Array<Array<SquareDetail>>,
-  onClick: (x: Int, y: Int) -> Unit
+  boardSize: Int,
+  board: List<SquareDetail>,
+  onClick: (squareIdx: Int) -> Unit
 ) {
-  val flatList = board.flatten()
-  if (flatList.isEmpty()) return
+  if (board.isEmpty()) return // TODO: Needed?
 
-  val boardSize = board[0].size
   LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(boardSize)) {
-    items(flatList.size /*key = { idx -> flatList[idx] }*/) { idx ->
-      val square = flatList[idx]
+    items(board.size /*key = { idx -> flatList[idx] }*/) { idx ->
+      val square = board[idx]
       Box(
         modifier = Modifier
           .aspectRatio(1f)
@@ -52,7 +55,7 @@ fun Board(
             ).value
           )
           .border(1.dp, Color.Black)
-          .clickable { onClick(idx % boardSize, idx / boardSize) },
+          .clickable { onClick(idx) },
         contentAlignment = Alignment.Center
       ) {
         if (square.hasPiece) {
@@ -74,18 +77,18 @@ fun Board(
   }
 }
 
-fun SquareDetail.getBackgroundColor(): Color = if (isTargeted || hasPiece) Color.Yellow else Color.LightGray
+fun SquareDetail.getBackgroundColor(): Color =
+  if (isTargeted || hasPiece) Color.Yellow else Color.LightGray
 
 
 @Preview
 @Composable
 fun BoardScreenPreview() {
-  Board(board = Array(4) {
-    arrayOf(
+  Board(
+    boardSize = 1, board = listOf(
       SquareDetail(
         hasPiece = true, isTargeted = false
       ),
-
-      )
-  }) { _, _ -> }
+    )
+  ) { _ -> }
 }
