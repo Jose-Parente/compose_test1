@@ -15,9 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+`import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.parentej.nquens1.R
 import com.parentej.nquens1.domain.model.SquareDetail
 import com.parentej.nquens1.ui.icons.Icons
 
@@ -40,6 +43,8 @@ fun Board(
   board: List<SquareDetail>,
   onClick: (squareIdx: Int) -> Unit
 ) {
+  val pieceIcon = ImageVector.vectorResource(R.drawable.rook)
+
   LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(boardSize)) {
     items(board.size) { idx ->
       val square = board[idx]
@@ -60,7 +65,7 @@ fun Board(
           Icon(
             modifier = Modifier.fillMaxSize(0.50f),
             tint = if (square == SquareDetail.PIECE_TARGETED) Color.Red else Color.Black,
-            imageVector = Icons.Queen,
+            imageVector = pieceIcon,
             contentDescription = null
           )
         } else if (square == SquareDetail.EMPTY_TARGETED) {
