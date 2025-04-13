@@ -1,5 +1,6 @@
 package com.parentej.nquens1.presentation
 
+import android.content.res.Configuration
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -14,9 +15,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -46,6 +49,8 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,6 +65,16 @@ import kotlin.math.min
 
 @Composable
 fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
+  if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    BoardScreenLandscape(modifier = modifier, viewModel = viewModel)
+  }
+  else {
+    BoardScreenPortrait(modifier = modifier, viewModel = viewModel)
+  }
+}
+
+@Composable
+fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
   val uiState = viewModel.uiState.collectAsStateWithLifecycle()
   Column(modifier = modifier) {
     Row {
@@ -67,7 +82,7 @@ fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
       SelectBoardPieceMenu(onBoardPieceSelected = { type -> viewModel.changeBoardPieceType(type) })
     }
 
-    Board2(
+    Board(
       modifier = Modifier
         .fillMaxWidth()
         .aspectRatio(1f),
@@ -81,7 +96,29 @@ fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
 }
 
 @Composable
-fun Board2(
+fun BoardScreenLandscape(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
+  val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+  Row (modifier = modifier) {
+    Column {
+      SelectBoardSizeMenu(onBoardSizeSelected = { size -> viewModel.changeBoardSize(size) })
+      SelectBoardPieceMenu(onBoardPieceSelected = { type -> viewModel.changeBoardPieceType(type) })
+    }
+
+    Board(
+      modifier = Modifier
+        .fillMaxHeight()
+        .aspectRatio(1f),
+      boardSize = uiState.value.boardSize,
+      pieceType = uiState.value.pieceType,
+      board = uiState.value.board
+    ) { squareIdx ->
+      viewModel.togglePosition(squareIdx)
+    }
+  }
+}
+
+@Composable
+fun Board(
   modifier: Modifier = Modifier,
   boardSize: Int,
   pieceType: PieceType,
@@ -217,7 +254,7 @@ fun Board2(
 }
 
 @Composable
-fun Board(
+fun Board2(
   modifier: Modifier = Modifier,
   boardSize: Int,
   pieceType: PieceType,
