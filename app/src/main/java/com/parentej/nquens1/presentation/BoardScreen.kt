@@ -97,18 +97,25 @@ fun Board2(
   )
   val painter = rememberVectorPainter(image = pieceIcon)
 
-  val animatedColors = remember(board.size) { board.map { Animatable(it.getBackgroundColor()) } }
-  LaunchedEffect(board) {
-    board.forEachIndexed { idx, square ->
-      if (idx < animatedColors.size) {
-        launch {
-          animatedColors[idx].animateTo(
-            square.getBackgroundColor(),
-            animationSpec = tween(durationMillis = 1000)
-          )
-        }
-      }
-    }
+//  val animatedColors = remember(board.size) { board.map { Animatable(it.getBackgroundColor()) } }
+//  LaunchedEffect(board) {
+//    board.forEachIndexed { idx, square ->
+//      if (idx < animatedColors.size) {
+//        launch {
+//          animatedColors[idx].animateTo(
+//            square.getBackgroundColor(),
+//            animationSpec = tween(durationMillis = 1000)
+//          )
+//        }
+//      }
+//    }
+//  }
+
+  val animatedColors = board.map {
+    animateColorAsState(
+      targetValue = it.getBackgroundColor(),
+      animationSpec = tween(durationMillis = 1000)
+    )
   }
 
   Canvas(modifier = modifier.pointerInput(Unit) {
@@ -126,7 +133,7 @@ fun Board2(
         val idx = y * boardSize + x
         val square = board[idx]
         drawRect(
-          color = animatedColors[idx].value,//Color.Green,
+          color = animatedColors[idx].value,
           topLeft = Offset(x * squareSize, y * squareSize),
           size = Size(squareSize, squareSize),
         )
@@ -140,6 +147,13 @@ fun Board2(
               )
             }
           }
+        }
+        if (square == SquareDetail.EMPTY_TARGETED) {
+          drawCircle(
+            color = Color.Black,
+            radius = 4.dp.toPx(),
+            center = Offset(x * squareSize + 0.5f * squareSize, y * squareSize + 0.5f * squareSize)
+          )
         }
       }
     }
@@ -306,7 +320,7 @@ fun SelectBoardPieceMenu(
 }
 
 fun SquareDetail.getBackgroundColor(): Color =
-  if (this == SquareDetail.EMPTY) Color.LightGray else Color.Yellow
+  if (this == SquareDetail.EMPTY) Color.LightGray else Color.Green
 
 @Composable
 fun PieceType.toStringResource() =
