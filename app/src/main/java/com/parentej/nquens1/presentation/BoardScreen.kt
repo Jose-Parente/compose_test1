@@ -66,6 +66,8 @@ fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
 @Composable
 fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
   val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+  val timer = viewModel.elapsedTime.collectAsStateWithLifecycle().value
+
   Column(modifier = modifier) {
     Row {
       SelectBoardSizeMenu(
@@ -76,6 +78,13 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
         onBoardPieceSelected = { type -> viewModel.changeBoardPieceType(type) },
       )
     }
+
+    Row {
+      Text(modifier=Modifier.padding(16.dp), text = "Moves: ")
+      Text(modifier=Modifier.padding(16.dp), text = "Time: $timer")
+    }
+
+    Text(modifier=Modifier.padding(16.dp), text = "High Score: ")
 
     Board(
       modifier = Modifier
@@ -141,7 +150,6 @@ fun Board(
     detectTapGestures { p ->
       val squareSize = min(size.width, size.height) / boardSize
       val idx = (p.y.toInt() / squareSize) * boardSize + (p.x.toInt() / squareSize)
-      println(">>>>>>>>>>>>>>> pressed $p => $idx")
       onClick(idx)
     }
   }) {
@@ -260,7 +268,7 @@ fun SelectBoardSizeMenu(
   ) {
     Button(onClick = { expanded = !expanded }, contentPadding = PaddingValues(horizontal = 8.dp)) {
       Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.board_size))
-      Text(text = stringResource(R.string.board_size))
+      Text(text = "$currentSize x $currentSize")
     }
     DropdownMenu(
       expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -287,9 +295,13 @@ fun SelectBoardPieceMenu(
   Box(
     modifier = modifier.padding(16.dp)
   ) {
-    Button(onClick = { expanded = !expanded }, contentPadding = PaddingValues(horizontal = 8.dp)) {
+    Button(
+      modifier = Modifier,
+      onClick = { expanded = !expanded },
+      contentPadding = PaddingValues(horizontal = 8.dp)
+    ) {
       Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.board_piece))
-      Text(text = stringResource(R.string.board_piece))
+      Text(text = currentPiece.toStringResource())
     }
     DropdownMenu(
       expanded = expanded, onDismissRequest = { expanded = false }) {
