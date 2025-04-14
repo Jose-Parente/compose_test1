@@ -80,11 +80,14 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
     }
 
     Row {
-      Text(modifier=Modifier.padding(16.dp), text = "Moves: ")
-      Text(modifier=Modifier.padding(16.dp), text = "Time: $timer")
+      Text(
+        modifier = Modifier.padding(16.dp),
+        text = "Moves left: ${uiState.boardState.nPiecesLeft}"
+      )
+      Text(modifier = Modifier.padding(16.dp), text = "Time: $timer")
     }
 
-    Text(modifier=Modifier.padding(16.dp), text = "High Score: ")
+    Text(modifier = Modifier.padding(16.dp), text = "High Score: ")
 
     Board(
       modifier = Modifier
@@ -92,7 +95,7 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
         .aspectRatio(1f),
       boardSize = uiState.boardSize,
       pieceType = uiState.pieceType,
-      board = uiState.board
+      board = uiState.boardState.squares
     ) { squareIdx -> viewModel.togglePosition(squareIdx) }
   }
 }
@@ -116,7 +119,7 @@ fun BoardScreenLandscape(modifier: Modifier = Modifier, viewModel: BoardViewMode
         .aspectRatio(1f),
       boardSize = uiState.value.boardSize,
       pieceType = uiState.value.pieceType,
-      board = uiState.value.board
+      board = uiState.value.boardState.squares
     ) { squareIdx ->
       viewModel.togglePosition(squareIdx)
     }

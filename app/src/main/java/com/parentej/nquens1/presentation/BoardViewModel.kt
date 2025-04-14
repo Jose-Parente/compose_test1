@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.parentej.nquens1.domain.model.BoardGame
+import com.parentej.nquens1.domain.model.BoardState
 import com.parentej.nquens1.domain.model.PieceType
 import com.parentej.nquens1.domain.usecase.CreateBoardUseCase
 import com.parentej.nquens1.engine.factory.BoardGameFactoryImpl
@@ -26,7 +27,13 @@ class BoardViewModel(
   private var timerJob: Job? = null
 
   private val _uiState =
-    MutableStateFlow(BoardUiState(boardSize = 0, board = emptyList(), pieceType = PieceType.QUEEN))
+    MutableStateFlow(
+      BoardUiState(
+        boardSize = 0,
+        boardState = BoardState(emptyList(), 0, false),
+        pieceType = PieceType.QUEEN,
+      )
+    )
   val uiState: StateFlow<BoardUiState> = _uiState
 
   private val _elapsedTime = MutableStateFlow("")
@@ -34,7 +41,7 @@ class BoardViewModel(
 
   fun togglePosition(squareIdx: Int) {
     gameEngine.togglePosition(squareIdx)
-    _uiState.update { it.copy(board = gameEngine.getBoardState().squares) }
+    _uiState.update { it.copy(boardState = gameEngine.getBoardState()) }
   }
 
   fun changeBoardSize(newSize: Int) {
@@ -51,7 +58,7 @@ class BoardViewModel(
       val startTime = System.currentTimeMillis()
       while (true) {
         val elapsed = System.currentTimeMillis() - startTime
-        _elapsedTime.emit("${elapsed/1000}.${(elapsed%1000)/100}")
+        _elapsedTime.emit("${elapsed / 1000}.${(elapsed % 1000) / 100}")
         delay(100)
       }
     }
@@ -67,7 +74,7 @@ class BoardViewModel(
     _uiState.update {
       BoardUiState(
         boardSize = boardSize,
-        board = gameEngine.getBoardState().squares,
+        boardState = gameEngine.getBoardState(),
         pieceType = pieceType,
       )
     }
