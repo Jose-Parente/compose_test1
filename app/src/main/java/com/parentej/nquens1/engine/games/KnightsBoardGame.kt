@@ -4,7 +4,7 @@ import com.parentej.nquens1.domain.model.BoardGame
 import com.parentej.nquens1.domain.model.BoardState
 import com.parentej.nquens1.domain.model.SquareDetail
 
-class HorsesBoardGame(private val size: Int) : BoardGame {
+class KnightsBoardGame(private val size: Int) : BoardGame {
   // For Knights, we can put them in squares with same color.
   // 4x4 = 16 squares => 8 knights
   // 5x5 = 25 squares => 13 knights
