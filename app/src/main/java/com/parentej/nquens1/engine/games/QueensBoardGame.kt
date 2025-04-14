@@ -24,7 +24,7 @@ class QueensBoardGame(private val size: Int) : BoardGame {
     diagonal2[x + y] += inc
   }
 
-  override fun getGameState(): List<SquareDetail> {
+  override fun getBoardState(): List<SquareDetail> {
     val res = ArrayList<SquareDetail>(size * size)
     for (y in 0 until size) {
       for (x in 0 until size) {

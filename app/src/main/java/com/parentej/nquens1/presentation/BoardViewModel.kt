@@ -34,7 +34,7 @@ class BoardViewModel(
 
   fun togglePosition(squareIdx: Int) {
     gameEngine.togglePosition(squareIdx)
-    _uiState.update { it.copy(board = gameEngine.getGameState()) }
+    _uiState.update { it.copy(board = gameEngine.getBoardState()) }
   }
 
   fun changeBoardSize(newSize: Int) {
@@ -67,7 +67,7 @@ class BoardViewModel(
     _uiState.update {
       BoardUiState(
         boardSize = boardSize,
-        board = gameEngine.getGameState(),
+        board = gameEngine.getBoardState(),
         pieceType = pieceType,
       )
     }

@@ -19,7 +19,7 @@ class TowersBoardGame(private val size: Int) : BoardGame {
     rows[y] += inc
   }
 
-  override fun getGameState(): List<SquareDetail> {
+  override fun getBoardState(): List<SquareDetail> {
     val res = ArrayList<SquareDetail>(size * size)
     for (y in 0 until size) {
       for (x in 0 until size) {

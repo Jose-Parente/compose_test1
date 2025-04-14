@@ -25,7 +25,7 @@ class HorsesBoardGame(private val size: Int) : BoardGame {
     }
   }
 
-  override fun getGameState(): List<SquareDetail> {
+  override fun getBoardState(): List<SquareDetail> {
     val res = ArrayList<SquareDetail>(size * size)
     for (y in 0 until size) {
       for (x in 0 until size) {
