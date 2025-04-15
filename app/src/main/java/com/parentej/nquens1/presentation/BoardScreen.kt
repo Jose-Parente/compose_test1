@@ -66,14 +66,18 @@ import com.parentej.nquens1.domain.model.SquareDetail
 import kotlin.math.min
 
 @Composable
-fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
+fun BoardScreen(
+  modifier: Modifier = Modifier,
+  viewModel: BoardViewModel,
+  toggleSquare: (idx: Int) -> Unit,
+) {
   val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
   val timer = viewModel.elapsedTime.collectAsStateWithLifecycle().value
 
   if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-    BoardScreenLandscape(modifier, uiState, timer, viewModel)
+    BoardScreenLandscape(modifier, uiState, timer, viewModel, toggleSquare)
   } else {
-    BoardScreenPortrait(modifier, uiState, timer, viewModel)
+    BoardScreenPortrait(modifier, uiState, timer, viewModel, toggleSquare)
   }
 
   CongratsDialog(
@@ -89,6 +93,7 @@ fun BoardScreenPortrait(
   uiState: BoardUiState,
   timer: String,
   viewModel: BoardViewModel,
+  toggleSquare: (idx: Int) -> Unit,
 ) {
   Column(modifier = modifier.padding(16.dp)) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
@@ -120,7 +125,7 @@ fun BoardScreenPortrait(
       boardSize = uiState.boardSize,
       pieceType = uiState.pieceType,
       board = uiState.boardState.squares
-    ) { squareIdx -> viewModel.togglePosition(squareIdx) }
+    ) { squareIdx -> toggleSquare(squareIdx) }
   }
 }
 
@@ -130,6 +135,7 @@ fun BoardScreenLandscape(
   uiState: BoardUiState,
   timer: String,
   viewModel: BoardViewModel,
+  toggleSquare: (idx: Int) -> Unit,
 ) {
   Row(modifier = modifier.padding(horizontal = 64.dp, vertical = 8.dp)) {
     Board(
@@ -137,9 +143,8 @@ fun BoardScreenLandscape(
       boardSize = uiState.boardSize,
       pieceType = uiState.pieceType,
       board = uiState.boardState.squares
-    ) { squareIdx ->
-      viewModel.togglePosition(squareIdx)
-    }
+    ) { squareIdx -> toggleSquare(squareIdx) }
+
     Column(modifier = Modifier.weight(0.4f), horizontalAlignment = Alignment.CenterHorizontally) {
       SelectBoardSizeMenu(
         currentSize = uiState.boardSize,
