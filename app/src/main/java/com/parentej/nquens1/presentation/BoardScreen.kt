@@ -67,18 +67,29 @@ import kotlin.math.min
 
 @Composable
 fun BoardScreen(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
-  if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-    BoardScreenLandscape(modifier = modifier, viewModel = viewModel)
-  } else {
-    BoardScreenPortrait(modifier = modifier, viewModel = viewModel)
-  }
-}
-
-@Composable
-fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
   val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
   val timer = viewModel.elapsedTime.collectAsStateWithLifecycle().value
 
+  if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    BoardScreenLandscape(modifier, uiState, timer, viewModel)
+  } else {
+    BoardScreenPortrait(modifier, uiState, timer, viewModel)
+  }
+
+  CongratsDialog(
+    uiState.boardState.isFinished,
+    timer = timer,
+    onDismiss = { viewModel.resetGame() }
+  )
+}
+
+@Composable
+fun BoardScreenPortrait(
+  modifier: Modifier = Modifier,
+  uiState: BoardUiState,
+  timer: String,
+  viewModel: BoardViewModel,
+) {
   Column(modifier = modifier.padding(16.dp)) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
       SelectBoardSizeMenu(
@@ -99,7 +110,7 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
         text = "Moves left: ${uiState.boardState.nPiecesLeft}"
       )
 
-      val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: $timer"
+      val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: ${timer}s"
       Text(modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, text = timeOrHighScore)
     }
 
@@ -112,34 +123,42 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
       board = uiState.boardState.squares
     ) { squareIdx -> viewModel.togglePosition(squareIdx) }
   }
-  CongratsDialog(
-    uiState.boardState.isFinished,
-    timer = timer,
-    onDismiss = { viewModel.resetGame() })
 }
 
 @Composable
-fun BoardScreenLandscape(modifier: Modifier = Modifier, viewModel: BoardViewModel) {
-  val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-  Row(modifier = modifier) {
-    Column {
-      SelectBoardSizeMenu(
-        currentSize = uiState.value.boardSize,
-        onBoardSizeSelected = { size -> viewModel.changeBoardSize(size) })
-      SelectBoardPieceMenu(
-        currentPiece = uiState.value.pieceType,
-        onBoardPieceSelected = { type -> viewModel.changeBoardPieceType(type) })
-    }
-
+fun BoardScreenLandscape(
+  modifier: Modifier = Modifier,
+  uiState: BoardUiState,
+  timer: String,
+  viewModel: BoardViewModel,
+) {
+  Row(modifier = modifier.padding(horizontal = 64.dp, vertical = 8.dp)) {
     Board(
-      modifier = Modifier
-        .fillMaxHeight()
-        .aspectRatio(1f),
-      boardSize = uiState.value.boardSize,
-      pieceType = uiState.value.pieceType,
-      board = uiState.value.boardState.squares
+      modifier = Modifier.aspectRatio(1f),
+      boardSize = uiState.boardSize,
+      pieceType = uiState.pieceType,
+      board = uiState.boardState.squares
     ) { squareIdx ->
       viewModel.togglePosition(squareIdx)
+    }
+    Column(modifier = Modifier.weight(0.4f), horizontalAlignment = Alignment.CenterHorizontally) {
+      SelectBoardSizeMenu(
+        currentSize = uiState.boardSize,
+        onBoardSizeSelected = { size -> viewModel.changeBoardSize(size) })
+      SelectBoardPieceMenu(
+        currentPiece = uiState.pieceType,
+        onBoardPieceSelected = { type -> viewModel.changeBoardPieceType(type) })
+      Button(onClick = viewModel::resetGame) {
+        Text(text = "Restart")
+      }
+      Text(
+        modifier = Modifier.padding(16.dp),
+        fontWeight = FontWeight.Bold,
+        text = "Moves left: ${uiState.boardState.nPiecesLeft}"
+      )
+
+      val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: ${timer}s"
+      Text(modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, text = timeOrHighScore)
     }
   }
 }
@@ -425,7 +444,7 @@ fun CongratsDialog(showDialog: Boolean, timer: String, onDismiss: () -> Unit) {
           Text(
             modifier = Modifier.padding(16.dp),
             fontWeight = FontWeight.Bold,
-            text = "Time: $timer"
+            text = "Time: ${timer}s"
           )
         }
 
