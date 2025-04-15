@@ -2,6 +2,7 @@ package com.parentej.nquens1.presentation
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -23,12 +24,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +46,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -49,8 +54,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.parentej.nquens1.R
 import com.parentej.nquens1.domain.model.PieceType
@@ -84,15 +92,15 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
         Text(text = "Restart")
       }
     }
-
     Row {
       Text(
         modifier = Modifier.padding(16.dp),
+        fontWeight = FontWeight.Bold,
         text = "Moves left: ${uiState.boardState.nPiecesLeft}"
       )
 
       val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: $timer"
-      Text(modifier = Modifier.padding(16.dp), text = timeOrHighScore)
+      Text(modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, text = timeOrHighScore)
     }
 
     Board(
@@ -104,6 +112,10 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
       board = uiState.boardState.squares
     ) { squareIdx -> viewModel.togglePosition(squareIdx) }
   }
+  CongratsDialog(
+    uiState.boardState.isFinished,
+    timer = timer,
+    onDismiss = { viewModel.resetGame() })
 }
 
 @Composable
@@ -369,4 +381,60 @@ fun BoardScreenPreview() {
     ),
     onClick = { _ -> },
   )
+}
+
+
+@Composable
+fun CongratsDialog(showDialog: Boolean, timer: String, onDismiss: () -> Unit) {
+  if (showDialog) {
+    var startAnimation by remember { mutableStateOf(false) }
+    val rotation by animateFloatAsState(
+      targetValue = if (startAnimation) 2 * 360f else 0f,
+      animationSpec = tween(durationMillis = 1000),
+      label = "fontSize"
+    )
+
+    LaunchedEffect(Unit) {
+      startAnimation = true
+    }
+
+    AlertDialog(
+      onDismissRequest = onDismiss,
+      title = {
+        Text(
+          modifier = Modifier.fillMaxWidth(),
+          text = "Congrats",
+          fontWeight = FontWeight.Bold,
+          textAlign = TextAlign.Center,
+        )
+      },
+      text = {
+        Column(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+          Text(
+            modifier = Modifier
+              .graphicsLayer {
+                rotationZ = rotation
+              },
+            textAlign = TextAlign.Center,
+            text = "\uD83C\uDFC6", // Trophy Emoji
+            fontSize = 128.sp
+          )
+          Text(
+            modifier = Modifier.padding(16.dp),
+            fontWeight = FontWeight.Bold,
+            text = "Time: $timer"
+          )
+        }
+
+      },
+      confirmButton = {
+        TextButton(onClick = onDismiss) {
+          Text("OK")
+        }
+      }
+    )
+  }
 }

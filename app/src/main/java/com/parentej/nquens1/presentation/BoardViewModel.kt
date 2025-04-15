@@ -41,8 +41,15 @@ class BoardViewModel(
 
   fun togglePosition(squareIdx: Int) {
     gameEngine.togglePosition(squareIdx)
-    _uiState.update { it.copy(boardState = gameEngine.getBoardState()) }
-    startTimer()
+    val boardState = gameEngine.getBoardState()
+    _uiState.update { it.copy(boardState = boardState) }
+
+    if (boardState.isFinished) {
+      stopTimer()
+    }
+    else {
+      startTimer()
+    }
   }
 
   fun changeBoardSize(newSize: Int) {
@@ -54,7 +61,6 @@ class BoardViewModel(
   }
 
   fun resetGame() {
-    resetTimer()
     createGame(_uiState.value.boardSize, _uiState.value.pieceType)
   }
 
@@ -71,10 +77,9 @@ class BoardViewModel(
     }
   }
 
-  private fun resetTimer() {
+  private fun stopTimer() {
     timerJob?.cancel()
     timerJob = null
-    _elapsedTime.update { "" }
   }
 
   private fun createGame(boardSize: Int, pieceType: PieceType) {
@@ -86,6 +91,8 @@ class BoardViewModel(
         pieceType = pieceType,
       )
     }
+    stopTimer()
+    _elapsedTime.update { "" }
   }
 
   companion object {
