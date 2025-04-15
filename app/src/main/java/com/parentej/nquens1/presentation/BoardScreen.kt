@@ -90,10 +90,10 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
         modifier = Modifier.padding(16.dp),
         text = "Moves left: ${uiState.boardState.nPiecesLeft}"
       )
-      Text(modifier = Modifier.padding(16.dp), text = "Time: $timer")
-    }
 
-    Text(modifier = Modifier.padding(16.dp), text = "High Score: ")
+      val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: $timer"
+      Text(modifier = Modifier.padding(16.dp), text = timeOrHighScore)
+    }
 
     Board(
       modifier = Modifier
