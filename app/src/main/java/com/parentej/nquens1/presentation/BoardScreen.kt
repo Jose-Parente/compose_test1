@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,7 +72,7 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
   val timer = viewModel.elapsedTime.collectAsStateWithLifecycle().value
 
   Column(modifier = modifier.padding(16.dp)) {
-    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
       SelectBoardSizeMenu(
         currentSize = uiState.boardSize,
         onBoardSizeSelected = { size -> viewModel.changeBoardSize(size) })
@@ -308,7 +310,11 @@ fun SelectBoardPieceMenu(
       contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
       Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.board_piece))
-      Text(text = currentPiece.toStringResource())
+      Icon(
+        modifier = Modifier.size(32.dp),
+        painter = currentPiece.toPainterResource(),
+        contentDescription = currentPiece.toStringResource(),
+      )
     }
     DropdownMenu(
       expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -316,6 +322,13 @@ fun SelectBoardPieceMenu(
         DropdownMenuItem(
           enabled = (piece != currentPiece),
           text = { Text(text = piece.toStringResource()) },
+          leadingIcon = {
+            Icon(
+              modifier = Modifier.size(32.dp),
+              painter = piece.toPainterResource(),
+              contentDescription = piece.toStringResource(),
+            )
+          },
           onClick = {
             expanded = false
             onBoardPieceSelected(piece)
@@ -334,6 +347,15 @@ fun PieceType.toStringResource() = stringResource(
     PieceType.QUEEN -> R.string.piece_queen
     PieceType.ROOK -> R.string.piece_rook
     PieceType.KNIGHT -> R.string.piece_knight
+  }
+)
+
+@Composable
+fun PieceType.toPainterResource() = painterResource(
+  when (this) {
+    PieceType.QUEEN -> R.drawable.queen
+    PieceType.ROOK -> R.drawable.rook
+    PieceType.KNIGHT -> R.drawable.knight
   }
 )
 
