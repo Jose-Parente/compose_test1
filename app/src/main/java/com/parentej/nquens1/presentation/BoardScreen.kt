@@ -110,8 +110,7 @@ fun BoardScreenPortrait(
         text = "Moves left: ${uiState.boardState.nPiecesLeft}"
       )
 
-      val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: ${timer}s"
-      Text(modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, text = timeOrHighScore)
+      HighScore(modifier = Modifier.padding(16.dp), highScore = uiState.highScore, timer = timer)
     }
 
     Board(
@@ -157,8 +156,7 @@ fun BoardScreenLandscape(
         text = "Moves left: ${uiState.boardState.nPiecesLeft}"
       )
 
-      val timeOrHighScore = if (timer.isBlank()) "High Score: " else "Time: ${timer}s"
-      Text(modifier = Modifier.padding(16.dp), fontWeight = FontWeight.Bold, text = timeOrHighScore)
+      HighScore(highScore = uiState.highScore, timer = timer)
     }
   }
 }
@@ -326,6 +324,13 @@ fun SelectBoardSizeMenu(
 }
 
 @Composable
+fun HighScore(modifier: Modifier = Modifier, highScore: String, timer: String) {
+  val highScoreValue = if (highScore.isBlank()) "n/a" else "${highScore}s"
+  val timeOrHighScore = if (timer.isBlank()) "High Score: $highScoreValue" else "Time: ${timer}s"
+  Text(modifier = modifier, fontWeight = FontWeight.Bold, text = timeOrHighScore)
+}
+
+@Composable
 fun SelectBoardPieceMenu(
   modifier: Modifier = Modifier,
   currentPiece: PieceType,
@@ -402,7 +407,6 @@ fun BoardScreenPreview() {
   )
 }
 
-
 @Composable
 fun CongratsDialog(showDialog: Boolean, timer: String, onDismiss: () -> Unit) {
   if (showDialog) {
@@ -441,11 +445,7 @@ fun CongratsDialog(showDialog: Boolean, timer: String, onDismiss: () -> Unit) {
             text = "\uD83C\uDFC6", // Trophy Emoji
             fontSize = 128.sp
           )
-          Text(
-            modifier = Modifier.padding(16.dp),
-            fontWeight = FontWeight.Bold,
-            text = "Time: ${timer}s"
-          )
+          HighScore(modifier = Modifier.padding(16.dp), highScore = "", timer = timer)
         }
 
       },

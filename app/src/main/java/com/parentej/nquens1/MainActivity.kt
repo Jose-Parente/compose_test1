@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
 
-    val viewModel: BoardViewModel by viewModels { BoardViewModel.Factory }
+    val appContainer = (application as MainApplication).appContainer
+    val viewModel: BoardViewModel by viewModels { appContainer.boardViewModelFactory }
     setContent {
       NQueenV1Theme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

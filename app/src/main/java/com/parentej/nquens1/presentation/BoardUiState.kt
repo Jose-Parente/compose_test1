@@ -7,4 +7,5 @@ data class BoardUiState(
   val boardSize: Int,
   val boardState: BoardState,
   val pieceType: PieceType,
+  val highScore: String,
 )
