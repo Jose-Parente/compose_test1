@@ -42,6 +42,7 @@ class BoardViewModel(
   fun togglePosition(squareIdx: Int) {
     gameEngine.togglePosition(squareIdx)
     _uiState.update { it.copy(boardState = gameEngine.getBoardState()) }
+    startTimer()
   }
 
   fun changeBoardSize(newSize: Int) {
@@ -52,8 +53,14 @@ class BoardViewModel(
     createGame(_uiState.value.boardSize, pieceType)
   }
 
+  fun resetGame() {
+    resetTimer()
+    createGame(_uiState.value.boardSize, _uiState.value.pieceType)
+  }
+
   private fun startTimer() {
-    stopTimer()
+    if (timerJob != null) return // Already started
+
     timerJob = viewModelScope.launch {
       val startTime = System.currentTimeMillis()
       while (true) {
@@ -64,9 +71,10 @@ class BoardViewModel(
     }
   }
 
-  private fun stopTimer() {
+  private fun resetTimer() {
     timerJob?.cancel()
     timerJob = null
+    _elapsedTime.update { "" }
   }
 
   private fun createGame(boardSize: Int, pieceType: PieceType) {
@@ -78,7 +86,6 @@ class BoardViewModel(
         pieceType = pieceType,
       )
     }
-    startTimer()
   }
 
   companion object {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -68,8 +69,8 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
   val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
   val timer = viewModel.elapsedTime.collectAsStateWithLifecycle().value
 
-  Column(modifier = modifier) {
-    Row {
+  Column(modifier = modifier.padding(16.dp)) {
+    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
       SelectBoardSizeMenu(
         currentSize = uiState.boardSize,
         onBoardSizeSelected = { size -> viewModel.changeBoardSize(size) })
@@ -77,6 +78,9 @@ fun BoardScreenPortrait(modifier: Modifier = Modifier, viewModel: BoardViewModel
         currentPiece = uiState.pieceType,
         onBoardPieceSelected = { type -> viewModel.changeBoardPieceType(type) },
       )
+      Button(onClick = viewModel::resetGame) {
+        Text(text = "Restart")
+      }
     }
 
     Row {
@@ -267,7 +271,7 @@ fun SelectBoardSizeMenu(
 ) {
   var expanded by remember { mutableStateOf(false) }
   Box(
-    modifier = modifier.padding(16.dp)
+    modifier = modifier
   ) {
     Button(onClick = { expanded = !expanded }, contentPadding = PaddingValues(horizontal = 8.dp)) {
       Icon(Icons.Default.ArrowDropDown, contentDescription = stringResource(R.string.board_size))
@@ -296,7 +300,7 @@ fun SelectBoardPieceMenu(
 ) {
   var expanded by remember { mutableStateOf(false) }
   Box(
-    modifier = modifier.padding(16.dp)
+    modifier = modifier
   ) {
     Button(
       modifier = Modifier,
