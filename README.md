@@ -17,3 +17,9 @@ The player can tap the squares on the board to places the pieces. In case of con
 <img src="docs/QueenMove1.png" width="20%" alt="One Queen placed"><img src="docs/QueenMove2.png" width="20%" alt="Two Queens placed"><img src="docs/congrats.png" width="20%" alt="Main Screen">
 
 When the player assigns/removes a piece to a square, the square color is animated to the final color, and a simple sound is played.
+
+# Build and test
+```
+./gradlew installDebug
+./gradlew clean app:test
+```
