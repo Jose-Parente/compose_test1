@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.parentej.nquens1.presentation.BoardScreen
-import com.parentej.nquens1.presentation.BoardViewModel
+import com.parentej.nquens1.ui.screens.BoardScreen
+import com.parentej.nquens1.ui.viewmodels.BoardViewModel
 import com.parentej.nquens1.ui.theme.NQueenV1Theme
 
 class MainActivity : ComponentActivity() {

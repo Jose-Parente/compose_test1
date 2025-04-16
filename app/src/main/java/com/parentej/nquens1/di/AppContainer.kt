@@ -10,7 +10,7 @@ import com.parentej.nquens1.domain.usecase.CreateBoardUseCase
 import com.parentej.nquens1.domain.usecase.LoadHighScoreUseCase
 import com.parentej.nquens1.domain.usecase.SaveHighScoreUseCase
 import com.parentej.nquens1.engine.factory.BoardGameFactoryImpl
-import com.parentej.nquens1.presentation.BoardViewModel
+import com.parentej.nquens1.ui.viewmodels.BoardViewModel
 
 class AppContainer(context: Context) {
   private val gameRepository = LocalGameRepositoryImpl(context)

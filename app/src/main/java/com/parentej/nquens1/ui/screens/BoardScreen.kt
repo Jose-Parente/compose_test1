@@ -1,4 +1,4 @@
-package com.parentej.nquens1.presentation
+package com.parentej.nquens1.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -63,6 +62,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.parentej.nquens1.R
 import com.parentej.nquens1.domain.model.PieceType
 import com.parentej.nquens1.domain.model.SquareDetail
+import com.parentej.nquens1.ui.viewmodels.BoardViewModel.UiState
+import com.parentej.nquens1.ui.viewmodels.BoardViewModel
 import kotlin.math.min
 
 @Composable
@@ -90,7 +91,7 @@ fun BoardScreen(
 @Composable
 fun BoardScreenPortrait(
   modifier: Modifier = Modifier,
-  uiState: BoardUiState,
+  uiState: UiState,
   timer: String,
   viewModel: BoardViewModel,
   toggleSquare: (idx: Int) -> Unit,
@@ -132,7 +133,7 @@ fun BoardScreenPortrait(
 @Composable
 fun BoardScreenLandscape(
   modifier: Modifier = Modifier,
-  uiState: BoardUiState,
+  uiState: UiState,
   timer: String,
   viewModel: BoardViewModel,
   toggleSquare: (idx: Int) -> Unit,

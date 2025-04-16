@@ -1,4 +1,4 @@
-package com.parentej.nquens1.presentation
+package com.parentej.nquens1.ui.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -25,19 +25,27 @@ class BoardViewModel(
   private val saveHighScoreUseCase: SaveHighScoreUseCase,
   private val loadHighScoreUseCase: LoadHighScoreUseCase,
 ) : ViewModel() {
+
+  data class UiState(
+    val boardSize: Int,
+    val boardState: BoardState,
+    val pieceType: PieceType,
+    val highScore: String,
+  )
+
   private lateinit var gameEngine: BoardGame
   private var timerJob: Job? = null
 
   private val _uiState =
     MutableStateFlow(
-      BoardUiState(
+      UiState(
         boardSize = 0,
         boardState = BoardState(emptyList(), 0, false),
         pieceType = PieceType.QUEEN,
         highScore = ""
       )
     )
-  val uiState: StateFlow<BoardUiState> = _uiState
+  val uiState: StateFlow<UiState> = _uiState
 
   private val _elapsedTime = MutableStateFlow(-1L)
   val elapsedTime: StateFlow<String> =
@@ -51,7 +59,7 @@ class BoardViewModel(
       val highScoreTime = loadHighScoreUseCase(pieceType, boardSize)
 
       _uiState.update {
-        BoardUiState(
+        UiState(
           boardSize = boardSize,
           boardState = gameEngine.getBoardState(),
           pieceType = pieceType,
@@ -110,3 +118,4 @@ class BoardViewModel(
 
   private fun Long.millisToDeciSecond() = "${this / 1000}.${(this % 1000) / 100}"
 }
+
